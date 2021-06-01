@@ -123,7 +123,78 @@ This knowledge can not be used to create equality sets containing addresses on d
 chains that belong to the same user. This is a problem if the user is not aware that this
 linking is possible and behaves as if the identities were independent.
 
+Reusing the Cosmos Hub path also has advantages. It allows chains to use existing client
+tooling for key management made for the Cosmos Hub. This includes the CLI application
+coming with the Cosmos SDK, client libraries like e.g. CosmJS or the Cosmos Ledger app.
+
+## The Cosmos Ledger app
+
+This Cosmos app for the [Ledger hardware wallet](https://www.ledger.com/) is in a bit of
+an identity crisis. One the one hand it is marketed as the app for the ATOM token. On the
+other hand it is called "Cosmos", not "Cosmos Hub". The app reqires the use of a HD path
+starting with `m / 44' / 118'`, i.e. the ATOM coin index.
+
+A few Cosmos projects decided to create their own Ledger apps, such as
+[Binance](https://support.ledger.com/hc/en-us/articles/360021894733-Binance-Chain-BNB-),
+[Terra](https://support.ledger.com/hc/en-us/articles/360017698979-Terra-LUNA-) or
+[Starname](https://support.ledger.com/hc/en-us/articles/360016254900-Starname-IOV-). This
+allows them to fully customize the app but comes with significant maintenance cost.
+
+It has been expressed by various community members that the goal is to be able to use one
+Ledger app for all Cosmos blockchains. This Cosmos SDK team
+[is](https://github.com/cosmos/cosmos-sdk/issues/6078)
+[working](https://github.com/cosmos/cosmos-sdk/issues/6513)
+[hard](https://github.com/cosmos/cosmos-sdk/issues/9320) to make transaction signing for
+arbitrary message types sufficiently self-describing to allow this to happen. This is in
+line with the vision to spawn
+[a million blockchains](https://www.youtube.com/watch?v=DWVPTYOrUUo) in the Cosmos
+ecosystem, which requires blockchain projects to be able to focus on their chain specific
+product instead of having to reinvent basic infrastructure components.
+
+While the Ledger app is a prominent and important example, most of the above holds for any
+key management and signing solution for Cosmos.
+
+## Goals
+
+Until now we went through the status quo, describing various shortcomings that we have
+today due to historic reasons. A HD path schema for Cosmos' multi-chain world should:
+
+1. Ensure users do not accidentally use the same public key on multiple blockchains.
+2. Avoid unnecessary path components originating from Bitcoin.
+3. Allow the use of a single Ledger app for many blockchains without having to update the
+   app for new chains.
+
+The rest of this decument will desctibe a solution that achieves those goals.
+
 ## Exploring other purposes
+
+As described above, using the 5 component path of BIP44 is not suitable. Luckily we can
+choose a new path format and remain fully BIP32 and BIP43 complient. BIP43 defines a HD
+path as `m / purpose' / *` with an integer purpose. The asterisk denotes an arbitrary sub
+path.
+
+Few different `purpose` values are used in the wild and there is no registry listing them.
+The ones found at the time of writing:
+
+| BIP43 `purpose` | Use case                                         | Reference                                                                                          |
+| --------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| 0               | BIP32 default account                            | _Note that `m/0'/*` is already taken by BIP32 (default account), which preceded this BIP._ [BIP43] |
+| 13              | SLIP13                                           | [SLIP13]                                                                                           |
+| 43              | Potentially reserved for non-Bitcoin cryptocoins | https://github.com/bitcoin/bips/pull/523, [EIP600]                                                 |
+| 44              | BIP44                                            | [BIP44]                                                                                            |
+| 45              | BIP45                                            | [BIP45]                                                                                            |
+| 48              | Graphene-based networks                          | [SLIP48]                                                                                           |
+| 49              | BIP49                                            | [BIP49]                                                                                            |
+| 80              | BIP80                                            | [BIP80]                                                                                            |
+| 84              | BIP84                                            | [BIP84]                                                                                            |
+| 1852            | HD Sequential wallets                            | [Cardano: About Address Derivation][cardano-derivation]                                            |
+| 10001–19999     | Potentially reserved for SLIPs                   | https://github.com/bitcoin/bips/pull/523                                                           |
+| 80475047        | Ledger GPG/SSH                                   | [openpgp-card-app-deterministic-key-derivation]                                                    |
+
+Looking at those numbers we see a lot of direct mappings between `BIP-XXXX` or `SLIP-XXXX`
+and the purpose `XXXX`. In order to avoid unnecessary conflics we stay aways from the four
+decimals decimals as well as the range reserved for SLIPs and look for a number greater
+than or equal 20000.
 
 ## Notes
 
@@ -144,7 +215,18 @@ parts 44'/c'/a'. Unfortunately, lot of exceptions occur due to compatibility rea
 [bip39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 [bip43]: https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
 [bip44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+[bip45]: https://github.com/bitcoin/bips/blob/master/bip-0045.mediawiki
+[bip49]: https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
+[bip80]: https://github.com/bitcoin/bips/blob/master/bip-0080.mediawiki
+[bip84]: https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
 [bip173]: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
+[eip600]: https://eips.ethereum.org/EIPS/eip-600
 [slip10]: https://github.com/satoshilabs/slips/blob/master/slip-0010.md
+[slip13]: https://github.com/satoshilabs/slips/blob/master/slip-0013.md
 [slip44]: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+[slip48]: https://github.com/satoshilabs/slips/blob/master/slip-0048.md
 [fundraiser path]: https://github.com/cosmos/fundraiser-cli/blob/2.11.3/golang/main.go#L90
+[openpgp-card-app-deterministic-key-derivation]:
+  https://github.com/LedgerHQ/openpgp-card-app/blob/64662c181f4c906288564cbfadc2db53df4534b0/doc/developper/gpgcard3.0-addon.rst#deterministic-key-derivation
+[cardano-derivation]:
+  https://docs.cardano.org/projects/cardano-wallet/en/latest/About-Address-Derivation.html)
