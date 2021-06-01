@@ -75,8 +75,8 @@ addresses look different at first glance, but contain the same data.
 import { pubkeyToAddress } from "@cosmjs/amino";
 
 const pubkey = {
-    type: "tendermint/PubKeySecp256k1",
-    value: "A08EGB7ro1ORuFhjOnZcSgwYlpe0DSFjVNUIkNNQxwKQ",
+  type: "tendermint/PubKeySecp256k1",
+  value: "A08EGB7ro1ORuFhjOnZcSgwYlpe0DSFjVNUIkNNQxwKQ",
 };
 
 const addressChainA = pubkeyToAddress(pubkey, "achain");
