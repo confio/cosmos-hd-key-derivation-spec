@@ -10,6 +10,21 @@ Bitcoin but are also used in many other blockchain ecosystems. BIP32 specifies H
 elliptic curve only but alternative aproaches have been developed outside of the Bitcoin ecosystem
 to generalize the same idea to other signing algorithms<sup>1</sup>.
 
+**Table of Contents**
+
+<!--ts-->
+
+- [Cosmos HD Key Derivation](#cosmos-hd-key-derivation)
+  - [BIP44](#bip44)
+  - [The Cosmos Hub path](#the-cosmos-hub-path)
+    - [Reuse of the Cosmos Hub path in Cosmos](#reuse-of-the-cosmos-hub-path-in-cosmos)
+  - [Exploring other purposes](#exploring-other-purposes)
+  - [Notes](#notes)
+
+<!-- Added by: simon, at: Di  1 Jun 2021 14:10:24 CEST -->
+
+<!--te-->
+
 ## BIP44
 
 An "HD path" is an instruction how to derive a keypair from a root secret. BIPP44 specifies a schema
