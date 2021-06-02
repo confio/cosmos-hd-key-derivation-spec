@@ -14,15 +14,19 @@ algorithms<sup>1</sup>.
 **Table of Contents**
 
 <!--ts-->
+* [Cosmos HD Key Derivation](#cosmos-hd-key-derivation)
+   * [BIP44](#bip44)
+   * [The Cosmos Hub path](#the-cosmos-hub-path)
+      * [Reuse of the Cosmos Hub path in Cosmos](#reuse-of-the-cosmos-hub-path-in-cosmos)
+   * [The Cosmos Ledger app](#the-cosmos-ledger-app)
+   * [Goals](#goals)
+   * [The Cosmos purpose](#the-cosmos-purpose)
+   * [The chain index](#the-chain-index)
+   * [Chain specific path structure](#chain-specific-path-structure)
+      * [Cosmos simple HD path](#cosmos-simple-hd-path)
+   * [Notes](#notes)
 
-- [Cosmos HD Key Derivation](#cosmos-hd-key-derivation)
-  - [BIP44](#bip44)
-  - [The Cosmos Hub path](#the-cosmos-hub-path)
-    - [Reuse of the Cosmos Hub path in Cosmos](#reuse-of-the-cosmos-hub-path-in-cosmos)
-  - [Exploring other purposes](#exploring-other-purposes)
-  - [Notes](#notes)
-
-<!-- Added by: simon, at: Di  1 Jun 2021 14:10:24 CEST -->
+<!-- Added by: simon, at: Mi  2 Jun 2021 09:19:54 CEST -->
 
 <!--te-->
 
