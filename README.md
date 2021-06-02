@@ -1,32 +1,34 @@
-# Cosmos HD Key Derivation
+# Cosmos HD key derivation
 
-Cosmos blockchains allow users to utilize Hierarchical deterministic key generation (HD
-keys) for deriving multiple cryptographic keypairs from a single secret value. This allows
-the user to use different keypair for different accounts on one blockchain or create
-accounts on different blockchains without having to secure multiple secrets.
+Cosmos blockchains support hierarchical deterministic key generation (HD keys) for
+deriving multiple cryptographic keypairs from a single secret value. This allows the user
+to use different keypairs for different accounts on one blockchain and create accounts on
+multiple blockchains without having to manage multiple secrets.
 
-The specifications used to do that are [BIP32], [BIP39], [BIP43] and [BIP44]. They
-originate from Bitcoin but are also used in many other blockchain ecosystems. BIP32
-specifies HD derivation for the elliptic curve only but alternative aproaches have been
-developed outside of the Bitcoin ecosystem to generalize the same idea to other signing
-algorithms<sup>1</sup>.
+The technology to do that is specified in [BIP32], [BIP39], [BIP43] and [BIP44]. Those
+specs originate from Bitcoin but are also used in many other blockchain ecosystems. BIP32
+specifies HD derivation for the elliptic curve secp256k1 only but alternative aproaches
+have been developed outside of the Bitcoin ecosystem to generalize the same idea to other
+signing algorithms<sup>1</sup>.
 
-**Table of Contents**
+**Table of contents**
 
 <!--ts-->
-* [Cosmos HD Key Derivation](#cosmos-hd-key-derivation)
-   * [BIP44](#bip44)
-   * [The Cosmos Hub path](#the-cosmos-hub-path)
-      * [Reuse of the Cosmos Hub path in Cosmos](#reuse-of-the-cosmos-hub-path-in-cosmos)
-   * [The Cosmos Ledger app](#the-cosmos-ledger-app)
-   * [Goals](#goals)
-   * [The Cosmos purpose](#the-cosmos-purpose)
-   * [The chain index](#the-chain-index)
-   * [Chain specific path structure](#chain-specific-path-structure)
-      * [Cosmos simple HD path](#cosmos-simple-hd-path)
-   * [Notes](#notes)
 
-<!-- Added by: simon, at: Mi  2 Jun 2021 09:19:54 CEST -->
+- [Cosmos HD key derivation](#cosmos-hd-key-derivation)
+  - [BIP44](#bip44)
+  - [The Cosmos Hub path](#the-cosmos-hub-path)
+    - [Reuse of the Cosmos Hub path in Cosmos](#reuse-of-the-cosmos-hub-path-in-cosmos)
+  - [The Cosmos Ledger app](#the-cosmos-ledger-app)
+  - [Goals](#goals)
+  - [The Cosmos purpose](#the-cosmos-purpose)
+  - [The chain index](#the-chain-index)
+  - [Chain specific path structure](#chain-specific-path-structure)
+    - [Cosmos simple HD path](#cosmos-simple-hd-path)
+  - [Other signing algorithms](#other-signing-algorithms)
+  - [Notes](#notes)
+
+<!-- Added by: simon, at: Mi  2 Jun 2021 14:47:28 CEST -->
 
 <!--te-->
 
@@ -39,10 +41,10 @@ specifies a schema for such paths as follows:
 m / 44' / coin_type' / account' / change / address_index
 ```
 
-where `m` is a constant symbol that defines the beginning of the path, `/` is the
-separator of path components, `44` is the the `purpose` value from BIP43, `'` denotes
-hardened derivation and the remaining four symbols are variable names for integers. A
-BIP44 path always has those five components.
+where `m` is a constant symbol a the beginning of the path, `/` is the separator of path
+components, `44` is the the `purpose` value from BIP43, `'` denotes hardened derivation
+and the remaining four symbols are variable names for integers. A BIP44 path always has
+those five components.
 
 A `coin_type` registry is maintained in [SLIP44] and the pattern for some example
 blockchains look like this.
@@ -63,7 +65,8 @@ address does not help for those cases. For some chains the unused components are
 with zeros. Others follow the Stellar's model by simplifying the path to 3
 components<sup>2</sup>, which results in paths that do not comply with BIP44 anymore. This
 shows how BIP44 is used for history reasons but is not a great fit for account based
-blockchains.
+blockchains. This concern is expressed in [EIP600] as follows: _Because Ethereum is based
+on account balances rather than UTXO, the hierarchy defined by BIP44 is poorly suited._
 
 ## The Cosmos Hub path
 
@@ -77,16 +80,16 @@ Thoughout Cosmos's history the difference between the Cosmos ecosystem and the C
 is not cleanly differentiated in many places. The fundraiser code uses the term "Cosmos
 addresses" when talking about addresses on the Cosmos Hub, the
 ["Cosmos" Ledger App is marketed as the ATOM app](https://support.ledger.com/hc/en-us/articles/360013713840-Cosmos-ATOM-)
-and a large number of other references in the ecosystem use cosmos when referring to the
+and a large number of other references in the ecosystem use "cosmos" when referring to the
 Cosmos Hub<sup>3</sup>. The latest revision of
 [the Cosmos website](https://cosmos.network) manages to communicate a strict
 differentiation between the two. It is unclear if this overall lack of precision is
-sloppiness or intentional. But in the context of HP paths it leads to a privacy issue.
+sloppiness or intentional but in the context of HP paths it leads to a privacy issue.
 
 ### Reuse of the Cosmos Hub path in Cosmos
 
-A good number of blockchains were created that reuse the Cosmos Hub path. A quick serach
-in the Keplr configuration reveals that at least Kava, Secret Network, Akash, SifChain,
+A good number of blockchains were created that reuse the Cosmos Hub path. A quick search
+in the [Keplr configuration] reveals that at least Kava, Secret Network, Akash, SifChain,
 CertiK, IRISnet, Regen, Sentinel, Cyber and Straightedge used or actively use the ATOM
 coin index 118. Using the same derivation path means that users that use one secret
 recovery phrase to interact with multiple networks will be signing with the same keypair.
@@ -123,29 +126,27 @@ console.log(toHex(dataA)); // 0d82b1e7c96dbfa42462fe612932e6bff111d51b
 console.log(toHex(dataB)); // 0d82b1e7c96dbfa42462fe612932e6bff111d51b
 ```
 
-This knowledge can not be used to create equality sets containing addresses on different
-chains that belong to the same user. This is a problem if the user is not aware that this
-linking is possible and behaves as if the identities were independent.
+This knowledge can now be used to create equality sets containing addresses on different
+chains that belong to the same user. This is a problem if the user is not aware that such
+a linking is possible and behaves as if the identities were independent.
 
 Reusing the Cosmos Hub path also has advantages. It allows chains to use existing client
-tooling for key management made for the Cosmos Hub. This includes the CLI application
-coming with the Cosmos SDK, client libraries like e.g. CosmJS or the Cosmos Ledger app.
+key management tooling made for the Cosmos Hub. This includes the CLI application coming
+with the Cosmos SDK, client libraries like e.g. CosmJS or the Cosmos Ledger app.
 
 ## The Cosmos Ledger app
 
-This Cosmos app for the [Ledger hardware wallet](https://www.ledger.com/) is in a bit of
-an identity crisis. One the one hand it is marketed as the app for the ATOM token. On the
-other hand it is called "Cosmos", not "Cosmos Hub". The app reqires the use of a HD path
-starting with `m / 44' / 118'`, i.e. the ATOM coin index.
+This Cosmos app for the [Ledger hardware wallet][ledger] is in a bit of an identity
+crisis. One the one hand it is marketed as the app for the ATOM token. On the other hand
+it is called "Cosmos", not "Cosmos Hub". The app reqires the use of a HD path starting
+with `m / 44' / 118'`, i.e. the ATOM coin index.
 
 A few Cosmos projects decided to create their own Ledger apps, such as
-[Binance](https://support.ledger.com/hc/en-us/articles/360021894733-Binance-Chain-BNB-),
-[Terra](https://support.ledger.com/hc/en-us/articles/360017698979-Terra-LUNA-) or
-[Starname](https://support.ledger.com/hc/en-us/articles/360016254900-Starname-IOV-). This
-allows them to fully customize the app but comes with significant maintenance cost.
+[Binance][ledgerapp-binance], [Terra][ledgerapp-terra] or [Starname][ledgerapp-starname].
+This allows them to fully customize the app but comes with significant maintenance cost.
 
-It has been expressed by various community members that the goal is to be able to use one
-Ledger app for all Cosmos blockchains. This Cosmos SDK team
+It has been expressed by various Cosmos community members that the goal is to be able to
+use one Ledger app for all Cosmos blockchains. This Cosmos SDK team
 [is](https://github.com/cosmos/cosmos-sdk/issues/6078)
 [working](https://github.com/cosmos/cosmos-sdk/issues/6513)
 [hard](https://github.com/cosmos/cosmos-sdk/issues/9320) to make transaction signing for
@@ -161,24 +162,25 @@ key management and signing solution for Cosmos.
 ## Goals
 
 Until now we went through the status quo, describing various shortcomings that we have
-today due to historic reasons. A HD path schema for Cosmos' multi-chain world should:
+today due to historic reasons. A modern HD path schema for Cosmos' multi-chain world
+should:
 
 1. Ensure users do not accidentally use the same public key on multiple blockchains.
 2. Avoid unnecessary path components originating from Bitcoin.
 3. Allow the use of a single Ledger app for many blockchains without having to update the
    app for new chains.
 
-The rest of this decument will desctibe a solution that achieves those goals.
+The rest of this document will describe a solution that achieves those goals.
 
 ## The Cosmos purpose
 
 As described above, using the 5 component path of BIP44 is not suitable. Luckily we can
-choose a new path format and remain fully BIP32 and BIP43 complient. BIP43 defines a HD
+choose a new path format and remain fully BIP32 and BIP43 compliant. BIP43 defines a HD
 path as `m / purpose' / *` with an integer purpose. The asterisk denotes an arbitrary sub
 path.
 
 Few different `purpose` values are used in the wild and there is no registry listing them.
-The ones found at the time of writing:
+The ones found at the time of writing are:
 
 | BIP43 `purpose` | Use case                | Reference                                                                                          |
 | --------------- | ----------------------- | -------------------------------------------------------------------------------------------------- |
@@ -195,24 +197,24 @@ The ones found at the time of writing:
 | 10001–19999     | Potentially reserved    | https://github.com/bitcoin/bips/pull/523                                                           |
 | 4673607         | Ledger GPG/SSH          | [openpgp-card-app-deterministic-key-derivation]                                                    |
 
-Looking at those numbers we see a lot of direct mappings between `BIP-XXXX` or `SLIP-XXXX`
-and the purpose `XXXX`. In order to avoid unnecessary conflics we stay aways from the four
-decimals decimals as well as the range reserved for SLIPs and look for a number greater
-than or equal 20000. In particular, every value `int(ASCII(s))` a 3 or 4 character string
-`s` would work. So let's just use `int(ASCII("sky")) = 7564153` as the entry point to the
-cosmos.
+Looking at those numbers we see a lot of direct mappings between the document names
+`BIP-XXXX` or `SLIP-XXXX` and the purpose `XXXX`. In order to avoid unnecessary conflics
+we stay aways from the four decimals decimals as well as the range reserved for SLIPs and
+look for a number greater than or equal 20000. In particular, every value `int(ASCII(s))`
+with a 3 or 4 character string `s` would work. So let's just use
+`int(ASCII("sky")) = 7564153` as the entry point to the cosmos.
 
 ## The chain index
 
 Cosmos paths then have the form `m / 7564153' / *` and we want to ensure that different
-chain's don't step on each others' toes. So the second path component becomes a chain
+chains don't step on each others' toes. So the second path component becomes a chain
 index: `m / 7564153' / chain_index' / *`.
 
 This chain index is very similar to the `coin_type` from BIP44/SLIP44 but uses a different
 name to make clear that there can be any number of coins in a given chain. Other than the
 chain vs. coin confusion, the registry in SLIP44 works pretty well to coordinate the
 assignment of indices across the blockchain ecosystem. The same is envisioned for Cosmos
-as well. The 2^31 possible indices allow registering approximately 2 billion chains.
+as well. The 2^31 possible values allow registering approximately 2 billion chains.
 
 Chain index 0 is reserved for testing purposes and chain index 1 is reserved for the
 Cosmos Hub because Cosmos Hub investors pay the bill for this work. All other indices
@@ -222,26 +224,45 @@ should be coordinated in a dedicated place.
 
 The Cosmos purpose and the chain index together serve as a namespace. Once a chain
 registered its chain index, the whole subtree `*` in `m / 7564153' / chain_index' / *` can
-be chosen freely. This allows very advanved path setup like the ones described in e.g.
-[EIP1581] and [EIP1775]. However, to keepl simple things simple, we propose the following
-simple path format.
+be chosen freely. This allows very advanced path setup like the ones described in e.g.
+[EIP1581] and [EIP1775]. However, to keep simple things simple, we propose the following
+simple HD path format.
 
 ### Cosmos simple HD path
 
 In account based blockchains the most widely used path format can be reduces to
-`(chain, a)` where chain identifies the blockchain and `a` is a 0-based account index. If
-you have something as simple as that, wallets can easily perform account discovery,
-similar to what is described in BIP44. Above we saw different implementations of that like
-`m/44'/118'/0'/0/a` or `m/44'/148'/a'`. We construct a simple HD path complient to the
-Cosmos purpose and chain index as the following 4 component path:
+`(chain, a)` where chain identifies the blockchain and `a` is a 0-based account index.
+Above we saw different implementations of that like `m/44'/118'/0'/0/a` or
+`m/44'/148'/a'`. If you have something as simple as that, wallets can easily perform
+account discovery, similar to what is described in BIP44. We construct a simple HD path
+compliant to the Cosmos purpose and chain index as the following 4 component path:
 
 ```
 m / 7564153' / chain_index' / 1' / a
 ```
 
 where `a` is a 0-based account index. We use 4 components instead of 3 to allow chains to
-use the simple HD path format as well as other schemes. `1'` was picked arbitrarily. The
-4th component is non-hardened to allow public derivation as described in BIP32.
+use the simple HD path format as well as other formats in parallel. `1'` was picked
+arbitrarily. The 4th component is non-hardened to allow public derivation as described in
+BIP32.
+
+## Other signing algorithms
+
+Supporting HD derivation for algorithms other than BIP32 (secp256k1 only) is out of scope
+for this document. However, here are some starting points for future work:
+
+- SLIP10 is a generalization of BIP32 for other elliptic curve signing algorithms,
+  particularly Ed25519. It does not support non-hardened derivations and is not commonly
+  used in Cosmos. The Comsos purpose and the chain index could be used with SLIP10
+  directly. Cosmos simple HD path however does not work unmodified because it requires
+  non-hardened derivation.
+- [Cardano documents][cardano-derivation] two different derivation algorithms: "ed25519@V1
+  (buggy)" and "ed25519@V2" which seem to use the same path component format as BIP32. To
+  what degree this is usable in Cosmos is unknown to the author.
+- Parity uses a
+  [HD Key Derivation](https://substrate.dev/docs/en/knowledgebase/integrate/subkey#hd-key-derivation)
+  scheme with `/` and `//` as separators and string path components that works for
+  sr25519.
 
 ## Notes
 
@@ -257,6 +278,8 @@ parts 44'/c'/a'. Unfortunately, lot of exceptions occur due to compatibility rea
 <sup>3</sup> Cosmos Hub specific resources: [Mintscan](https://www.mintscan.io/cosmos),
 [Big Dipper](https://cosmos.bigdipper.live/), [RPC domain](https://rpc.cosmos.network/),
 [Keplr config](https://github.com/chainapsis/keplr-extension/blob/v0.8.8/packages/extension/src/config.ts#L62-L67)
+
+<!-- End of document. Links below are not rendered. -->
 
 [bip32]: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 [bip39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
@@ -278,4 +301,12 @@ parts 44'/c'/a'. Unfortunately, lot of exceptions occur due to compatibility rea
 [openpgp-card-app-deterministic-key-derivation]:
   https://github.com/LedgerHQ/openpgp-card-app/blob/64662c181f4c906288564cbfadc2db53df4534b0/doc/developper/gpgcard3.0-addon.rst#deterministic-key-derivation
 [cardano-derivation]:
-  https://docs.cardano.org/projects/cardano-wallet/en/latest/About-Address-Derivation.html)
+  https://docs.cardano.org/projects/cardano-wallet/en/latest/About-Address-Derivation.html
+[keplr configuration]:
+  https://github.com/chainapsis/keplr-extension/blob/v0.8.8/packages/extension/src/config.ts
+[ledger]: https://www.ledger.com/
+[ledgerapp-binance]:
+  https://support.ledger.com/hc/en-us/articles/360021894733-Binance-Chain-BNB-
+[ledgerapp-terra]: https://support.ledger.com/hc/en-us/articles/360017698979-Terra-LUNA-
+[ledgerapp-starname]:
+  https://support.ledger.com/hc/en-us/articles/360016254900-Starname-IOV-
