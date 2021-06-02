@@ -25,10 +25,12 @@ signing algorithms<sup>1</sup>.
   - [The chain index](#the-chain-index)
   - [Chain specific path structure](#chain-specific-path-structure)
     - [Cosmos simple HD path](#cosmos-simple-hd-path)
+  - [Implementation](#implementation)
+  - [Migration](#migration)
   - [Other signing algorithms](#other-signing-algorithms)
   - [Notes](#notes)
 
-<!-- Added by: simon, at: Mi  2 Jun 2021 14:47:28 CEST -->
+<!-- Added by: simon, at: Mi  2 Jun 2021 15:24:01 CEST -->
 
 <!--te-->
 
@@ -245,6 +247,14 @@ where `a` is a 0-based account index. We use 4 components instead of 3 to allow 
 use the simple HD path format as well as other formats in parallel. `1'` was picked
 arbitrarily. The 4th component is non-hardened to allow public derivation as described in
 BIP32.
+
+## Implementation
+
+TODO: do
+
+## Migration
+
+TODO: do
 
 ## Other signing algorithms
 
