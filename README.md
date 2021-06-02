@@ -166,7 +166,7 @@ today due to historic reasons. A HD path schema for Cosmos' multi-chain world sh
 
 The rest of this decument will desctibe a solution that achieves those goals.
 
-## Exploring other purposes
+## The Cosmos purpose
 
 As described above, using the 5 component path of BIP44 is not suitable. Luckily we can
 choose a new path format and remain fully BIP32 and BIP43 complient. BIP43 defines a HD
@@ -176,25 +176,68 @@ path.
 Few different `purpose` values are used in the wild and there is no registry listing them.
 The ones found at the time of writing:
 
-| BIP43 `purpose` | Use case                                         | Reference                                                                                          |
-| --------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| 0               | BIP32 default account                            | _Note that `m/0'/*` is already taken by BIP32 (default account), which preceded this BIP._ [BIP43] |
-| 13              | SLIP13                                           | [SLIP13]                                                                                           |
-| 43              | Potentially reserved for non-Bitcoin cryptocoins | https://github.com/bitcoin/bips/pull/523, [EIP600]                                                 |
-| 44              | BIP44                                            | [BIP44]                                                                                            |
-| 45              | BIP45                                            | [BIP45]                                                                                            |
-| 48              | Graphene-based networks                          | [SLIP48]                                                                                           |
-| 49              | BIP49                                            | [BIP49]                                                                                            |
-| 80              | BIP80                                            | [BIP80]                                                                                            |
-| 84              | BIP84                                            | [BIP84]                                                                                            |
-| 1852            | HD Sequential wallets                            | [Cardano: About Address Derivation][cardano-derivation]                                            |
-| 10001–19999     | Potentially reserved for SLIPs                   | https://github.com/bitcoin/bips/pull/523                                                           |
-| 80475047        | Ledger GPG/SSH                                   | [openpgp-card-app-deterministic-key-derivation]                                                    |
+| BIP43 `purpose` | Use case                | Reference                                                                                          |
+| --------------- | ----------------------- | -------------------------------------------------------------------------------------------------- |
+| 0               | BIP32 default account   | _Note that `m/0'/*` is already taken by BIP32 (default account), which preceded this BIP._ [BIP43] |
+| 13              | SLIP13                  | [SLIP13]                                                                                           |
+| 43              | Potentially reserved    | https://github.com/bitcoin/bips/pull/523, [EIP600]                                                 |
+| 44              | BIP44                   | [BIP44]                                                                                            |
+| 45              | BIP45                   | [BIP45]                                                                                            |
+| 48              | Graphene-based networks | [SLIP48]                                                                                           |
+| 49              | BIP49                   | [BIP49]                                                                                            |
+| 80              | BIP80                   | [BIP80]                                                                                            |
+| 84              | BIP84                   | [BIP84]                                                                                            |
+| 1852            | HD Sequential wallets   | [Cardano: About Address Derivation][cardano-derivation]                                            |
+| 10001–19999     | Potentially reserved    | https://github.com/bitcoin/bips/pull/523                                                           |
+| 4673607         | Ledger GPG/SSH          | [openpgp-card-app-deterministic-key-derivation]                                                    |
 
 Looking at those numbers we see a lot of direct mappings between `BIP-XXXX` or `SLIP-XXXX`
 and the purpose `XXXX`. In order to avoid unnecessary conflics we stay aways from the four
 decimals decimals as well as the range reserved for SLIPs and look for a number greater
-than or equal 20000.
+than or equal 20000. In particular, every value `int(ASCII(s))` a 3 or 4 character string
+`s` would work. So let's just use `int(ASCII("sky")) = 7564153` as the entry point to the
+cosmos.
+
+## The chain index
+
+Cosmos paths then have the form `m / 7564153' / *` and we want to ensure that different
+chain's don't step on each others' toes. So the second path component becomes a chain
+index: `m / 7564153' / chain_index' / *`.
+
+This chain index is very similar to the `coin_type` from BIP44/SLIP44 but uses a different
+name to make clear that there can be any number of coins in a given chain. Other than the
+chain vs. coin confusion, the registry in SLIP44 works pretty well to coordinate the
+assignment of indices across the blockchain ecosystem. The same is envisioned for Cosmos
+as well. The 2^31 possible indices allow registering approximately 2 billion chains.
+
+Chain index 0 is reserved for testing purposes and chain index 1 is reserved for the
+Cosmos Hub because Cosmos Hub investors pay the bill for this work. All other indices
+should be coordinated in a dedicated place.
+
+## Chain specific path structure
+
+The Cosmos purpose and the chain index together serve as a namespace. Once a chain
+registered its chain index, the whole subtree `*` in `m / 7564153' / chain_index' / *` can
+be chosen freely. This allows very advanved path setup like the ones described in e.g.
+[EIP1581] and [EIP1775]. However, to keepl simple things simple, we propose the following
+simple path format.
+
+### Cosmos simple HD path
+
+In account based blockchains the most widely used path format can be reduces to
+`(chain, a)` where chain identifies the blockchain and `a` is a 0-based account index. If
+you have something as simple as that, wallets can easily perform account discovery,
+similar to what is described in BIP44. Above we saw different implementations of that like
+`m/44'/118'/0'/0/a` or `m/44'/148'/a'`. We construct a simple HD path complient to the
+Cosmos purpose and chain index as the following 4 component path:
+
+```
+m / 7564153' / chain_index' / 1' / a
+```
+
+where `a` is a 0-based account index. We use 4 components instead of 3 to allow chains to
+use the simple HD path format as well as other schemes. `1'` was picked arbitrarily. The
+4th component is non-hardened to allow public derivation as described in BIP32.
 
 ## Notes
 
@@ -221,6 +264,8 @@ parts 44'/c'/a'. Unfortunately, lot of exceptions occur due to compatibility rea
 [bip84]: https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
 [bip173]: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
 [eip600]: https://eips.ethereum.org/EIPS/eip-600
+[eip1581]: https://eips.ethereum.org/EIPS/eip-1581
+[eip1775]: https://eips.ethereum.org/EIPS/eip-1775
 [slip10]: https://github.com/satoshilabs/slips/blob/master/slip-0010.md
 [slip13]: https://github.com/satoshilabs/slips/blob/master/slip-0013.md
 [slip44]: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
