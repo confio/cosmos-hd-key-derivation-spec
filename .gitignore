@@ -1,3 +1,5 @@
+.vscode/
+
 gh-md-toc
 *.md.orig.*
 *.md.toc.*
