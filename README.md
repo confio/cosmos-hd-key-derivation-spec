@@ -292,22 +292,22 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 
 <!-- End of document. Links below are not rendered. -->
 
-[bip32]: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
-[bip39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
-[bip43]: https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
-[bip44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
-[bip45]: https://github.com/bitcoin/bips/blob/master/bip-0045.mediawiki
-[bip49]: https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
-[bip80]: https://github.com/bitcoin/bips/blob/master/bip-0080.mediawiki
-[bip84]: https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
-[bip173]: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
+[bip32]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0032.mediawiki
+[bip39]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0039.mediawiki
+[bip43]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0043.mediawiki
+[bip44]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0044.mediawiki
+[bip45]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0045.mediawiki
+[bip49]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0049.mediawiki
+[bip80]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0080.mediawiki
+[bip84]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0084.mediawiki
+[bip173]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0173.mediawiki
 [eip600]: https://eips.ethereum.org/EIPS/eip-600
 [eip1581]: https://eips.ethereum.org/EIPS/eip-1581
 [eip1775]: https://eips.ethereum.org/EIPS/eip-1775
-[slip10]: https://github.com/satoshilabs/slips/blob/master/slip-0010.md
-[slip13]: https://github.com/satoshilabs/slips/blob/master/slip-0013.md
-[slip44]: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-[slip48]: https://github.com/satoshilabs/slips/blob/master/slip-0048.md
+[slip10]: https://github.com/satoshilabs/slips/blob/ef6d7700cc/slip-0010.md
+[slip13]: https://github.com/satoshilabs/slips/blob/ef6d7700cc/slip-0013.md
+[slip44]: https://github.com/satoshilabs/slips/blob/ef6d7700cc/slip-0044.md
+[slip48]: https://github.com/satoshilabs/slips/blob/ef6d7700cc/slip-0048.md
 [fundraiser path]: https://github.com/cosmos/fundraiser-cli/blob/2.11.3/golang/main.go#L90
 [openpgp-card-app-deterministic-key-derivation]:
   https://github.com/LedgerHQ/openpgp-card-app/blob/64662c181f4c906288564cbfadc2db53df4534b0/doc/developper/gpgcard3.0-addon.rst#deterministic-key-derivation
