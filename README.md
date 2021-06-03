@@ -267,8 +267,8 @@ for this document. However, here are some starting points for future work:
   directly. The Cosmos simple HD path however cannot be used without modification because
   it requires non-hardened derivation.
 - [Cardano documents][cardano-derivation] two different derivation algorithms: "ed25519@V1
-  (buggy)" and "ed25519@V2" which seem to use the same path component format as BIP32. To
-  what degree this is usable in Cosmos is unknown to the author.
+  (buggy)" and "ed25519@V2" which seem to use the same path component format as BIP32. The
+  author does not know whether or to what degree this could be used in Cosmos.
 - Parity uses an
   [HD Key Derivation](https://substrate.dev/docs/en/knowledgebase/integrate/subkey#hd-key-derivation)
   scheme with `/` and `//` as separators and string path components that works for
