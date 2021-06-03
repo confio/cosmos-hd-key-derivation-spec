@@ -36,7 +36,7 @@ the same idea to other signing algorithms<sup>1</sup>.
 
 ## BIP44
 
-An "HD path" is an instruction as to how to derive a keypair from a root secret. BIPP44
+An "HD path" is an instruction as to how to derive a keypair from a root secret. BIP44
 specifies a schema for such paths as follows:
 
 ```
