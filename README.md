@@ -6,10 +6,10 @@ to use different keypairs for different accounts on one blockchain and create ac
 multiple blockchains without having to manage multiple secrets.
 
 The technology to do that is specified in [BIP32], [BIP39], [BIP43] and [BIP44]. Those
-specs originate from the Bitcoin community but are also used in many other blockchain ecosystems. BIP32
-specifies HD derivation for the elliptic curve secp256k1 only but alternative approaches
-have been developed outside of the Bitcoin ecosystem to generalize the same idea to other
-signing algorithms<sup>1</sup>.
+specs originate from the Bitcoin community but are also used in many other blockchain
+ecosystems. BIP32 specifies HD derivation for the elliptic curve secp256k1 only but
+alternative approaches have been developed outside of the Bitcoin ecosystem to generalize
+the same idea to other signing algorithms<sup>1</sup>.
 
 **Table of contents**
 
@@ -62,9 +62,9 @@ Stellar:    m / 44' / 148' / address_index'
 ```
 
 As you can see for the blockchains that use an account based model instead of UTXOs, only
-one path component is variable (`address_index`) and the differentiation between account and
-address does not help for those cases. For some chains the unused components are filled
-with zeros. Others follow Stellar's model by simplifying the path to 3
+one path component is variable (`address_index`) and the differentiation between account
+and address does not help for those cases. For some chains the unused components are
+filled with zeros. Others follow Stellar's model by simplifying the path to 3
 components<sup>2</sup>, which results in paths that do not comply with BIP44 anymore. This
 shows how BIP44 is used for historical reasons but is not a great fit for account based
 blockchains. This concern is expressed in [EIP600] as follows: _Because Ethereum is based
@@ -79,8 +79,8 @@ is used for multiple accounts of the same user. This path has been [used in the 
 fundraiser][fundraiser path] with `address_index = 0`.
 
 Throughout Cosmos's history the difference between the Cosmos ecosystem and the Cosmos Hub
-fails to be cleanly differentiated in many places. The fundraiser code uses the term "Cosmos
-addresses" when talking about addresses on the Cosmos Hub, the
+fails to be cleanly differentiated in many places. The fundraiser code uses the term
+"Cosmos addresses" when talking about addresses on the Cosmos Hub, the
 ["Cosmos" Ledger App is marketed as the ATOM app](https://support.ledger.com/hc/en-us/articles/360013713840-Cosmos-ATOM-)
 and a large number of other references in the ecosystem use "cosmos" when referring to the
 Cosmos Hub<sup>3</sup>. The latest revision of
@@ -147,8 +147,8 @@ A few Cosmos projects decided to create their own Ledger apps, such as
 [Binance][ledgerapp-binance], [Terra][ledgerapp-terra] or [Starname][ledgerapp-starname].
 This allows them to fully customize the app but comes with significant maintenance cost.
 
-A goal expressed by various Cosmos community members is to be able to
-use one Ledger app for all Cosmos blockchains. The Cosmos SDK team
+A goal expressed by various Cosmos community members is to be able to use one Ledger app
+for all Cosmos blockchains. The Cosmos SDK team
 [is](https://github.com/cosmos/cosmos-sdk/issues/6078)
 [working](https://github.com/cosmos/cosmos-sdk/issues/6513)
 [hard](https://github.com/cosmos/cosmos-sdk/issues/9320) to make transaction signing for
@@ -163,12 +163,12 @@ key management and signing solution for Cosmos.
 
 ## Goals
 
-So far we have reviewed the status quo, describing various shortcomings that we have
-today due to historical reasons. A modern HD path schema for Cosmos' multi-chain world
-should:
+So far we have reviewed the status quo, describing various shortcomings that we have today
+due to historical reasons. A modern HD path schema for Cosmos' multi-chain world should:
 
 1. Ensure users do not accidentally use the same public key on multiple blockchains.
-2. Avoid unnecessary path components originating from irrelevant requirements relating to the Bitcoin blockchain.
+2. Avoid unnecessary path components originating from irrelevant requirements relating to
+   the Bitcoin blockchain.
 3. Allow the use of a single Ledger app for many blockchains without having to update the
    app for new chains.
 
@@ -181,8 +181,8 @@ choose a new path format and remain fully BIP32 and BIP43 compliant. BIP43 defin
 path as `m / purpose' / *` with an integer purpose. The asterisk denotes an arbitrary sub
 path.
 
-A few different `purpose` values are used in the wild and as yet there is no registry listing them.
-The ones found at the time of writing are:
+A few different `purpose` values are used in the wild and as yet there is no registry
+listing them. The ones found at the time of writing are:
 
 | BIP43 `purpose` | Use case                | Reference                                                                                          |
 | --------------- | ----------------------- | -------------------------------------------------------------------------------------------------- |
@@ -202,8 +202,8 @@ The ones found at the time of writing are:
 Looking at those numbers we see a lot of direct mappings between the document names
 `BIP-XXXX` or `SLIP-XXXX` and the purpose `XXXX`. In order to avoid unnecessary conflics
 we stay away from the four decimal purposes as well as the range reserved for SLIPs and
-look for a number greater than or equal to 20000. In particular, every value `int(ASCII(s))`
-with a 3 or 4 character string `s` would work. So let's just use
+look for a number greater than or equal to 20000. In particular, every value
+`int(ASCII(s))` with a 3 or 4 character string `s` would work. So let's just use
 `int(ASCII("sky")) = 7564153` as the entry point to the cosmos.
 
 ## The chain index
@@ -219,13 +219,13 @@ assignment of indices across the blockchain ecosystem. The same is envisioned fo
 as well. The 2^31 possible values allow registering approximately 2 billion chains.
 
 Chain index 0 is reserved for testing purposes and chain index 1 is reserved for the
-Cosmos Hub because Cosmos Hub investors are paying the bill for this work. All other indices
-should be coordinated in a dedicated place.
+Cosmos Hub because Cosmos Hub investors are paying the bill for this work. All other
+indices should be coordinated in a dedicated place.
 
 ## Chain specific path structure
 
-The Cosmos purpose and the chain index together serve as a namespace. Once a chain
-has registered its chain index, the whole subtree `*` in `m / 7564153' / chain_index' / *` can
+The Cosmos purpose and the chain index together serve as a namespace. Once a chain has
+registered its chain index, the whole subtree `*` in `m / 7564153' / chain_index' / *` can
 be chosen freely. This allows very advanced path setups like the ones described in e.g.
 [EIP1581] and [EIP1775]. However, to keep simple things simple, we propose the following
 simple HD path format.
@@ -264,8 +264,8 @@ for this document. However, here are some starting points for future work:
 - SLIP10 is a generalization of BIP32 for other elliptic curve signing algorithms,
   particularly Ed25519. It does not support non-hardened derivations and is not commonly
   used in Cosmos. The Cosmos purpose and the chain index could be used with SLIP10
-  directly. The Cosmos simple HD path however cannot be used without modification because it requires
-  non-hardened derivation.
+  directly. The Cosmos simple HD path however cannot be used without modification because
+  it requires non-hardened derivation.
 - [Cardano documents][cardano-derivation] two different derivation algorithms: "ed25519@V1
   (buggy)" and "ed25519@V2" which seem to use the same path component format as BIP32. To
   what degree this is usable in Cosmos is unknown to the author.
