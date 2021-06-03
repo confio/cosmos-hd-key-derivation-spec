@@ -200,7 +200,7 @@ listing them. The ones found at the time of writing are:
 | 4673607         | Ledger GPG/SSH          | [openpgp-card-app-deterministic-key-derivation]                                                    |
 
 Looking at those numbers we see a lot of direct mappings between the document names
-`BIP-XXXX` or `SLIP-XXXX` and the purpose `XXXX`. In order to avoid unnecessary conflics
+`BIP-XXXX` or `SLIP-XXXX` and the purpose `XXXX`. In order to avoid unnecessary conflicts
 we stay away from the four decimal purposes as well as the range reserved for SLIPs and
 look for a number greater than or equal to 20000. In particular, every value
 `int(ASCII(s))` with a 3 or 4 character string `s` would work. So let's just use
