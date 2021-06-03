@@ -46,7 +46,8 @@ m / 44' / coin_type' / account' / change / address_index
 where `m` is a constant symbol at the beginning of the path, `/` is the separator of path
 components, `44` is the the `purpose` value from BIP43, `'` denotes hardened derivation
 and the remaining four symbols are variable names for integers. A BIP44 path always has
-those five components.
+those five components where the first three are always hardened and the last two are
+always unhardened.
 
 A `coin_type` registry is maintained in [SLIP44] and the pattern for some example
 blockchains looks like this.
