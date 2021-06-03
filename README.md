@@ -202,9 +202,9 @@ listing them. The ones found at the time of writing are:
 
 Looking at those numbers we see a lot of direct mappings between the document names
 `BIP-XXXX` or `SLIP-XXXX` and the purpose `XXXX`. In order to avoid unnecessary conflicts
-we stay away from the four decimal purposes as well as the range reserved for SLIPs and
-look for a number greater than or equal to 20000. In particular, every value
-`int(ASCII(s))` with a 3 or 4 character string `s` would work. So let's just use
+we stay away from the four digit purposes as well as the range reserved for SLIPs and look
+for a number greater than or equal to 20000. In particular, every value `int(ASCII(s))`
+with a 3 or 4 character string `s` would work. So let's just use
 `int(ASCII("sky")) = 7564153` as the entry point to the cosmos.
 
 ## The chain index
