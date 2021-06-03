@@ -251,7 +251,61 @@ BIP32.
 
 ## Implementation
 
-TODO: do
+It is important to ensure the derivation can be implemented in both hardware and software
+wallets. We explore two example implementations to verify the feasibility.
+
+## Implementation in the Ledger app
+
+Currently the Cosmos Ledger app
+[sets the path](https://github.com/cosmos/ledger-cosmos/blob/6c194daa28936e273f9548eabca9e72ba04bb632/app/Makefile#L33)
+`44'/118'` when
+[loading the app onto the device](https://github.com/cosmos/ledger-cosmos/blob/6c194daa28936e273f9548eabca9e72ba04bb632/app/Makefile#L168-L169).
+This path serves as a prefix such that applications connecting to the Ledger app can only
+use paths under that prefix. The other path components are then
+[set by the application](https://github.com/Zondax/ledger-cosmos-js/blob/1b245bbced1bd92b9d5ce5898073439d4f1ab73b/tests/basic.ispec.js#L48-L50).
+Currently the following restrictions
+[are implemented](https://github.com/cosmos/ledger-cosmos/blob/6c194daa28936e273f9548eabca9e72ba04bb632/app/src/common/app_main.c#L99-L114):
+
+1. Exactly 5 path components
+2. Component 0 is `44'`
+3. Component 1 is `118'`
+4. Component 3 is `0'`
+5. Component 2/3/4 are small values (`x'` or `x` with `x <= 100`)
+
+And update to the Ledger app would be required to loosen those restrictions in case the
+Cosmos purpose `7564153` is used instead of `44`. In particular the app should not not
+auto-harden any component and support paths of variable length.
+
+## Implementation in CosmJS
+
+CosmJS implements Bech32 via the more general SLIP10 specification, which uses the same
+path format. An implementation of the above is as simple as that:
+
+```ts
+/**
+ * Creates a Cosmos path under the Cosmos purpose 7564153
+ * in the form `m/7564153'/chain_index'/*`.
+ */
+export function makeCosmosPath(
+  chainIndex: number,
+  ...components: Slip10RawIndex[]
+): HdPath {
+  const cosmosPurpose = 7564153;
+  return [
+    Slip10RawIndex.hardened(cosmosPurpose),
+    Slip10RawIndex.hardened(chainIndex),
+    ...components,
+  ];
+}
+
+/**
+ * Creates a Cosmos simple HD path in the form `m/7564153'/chain_index'/1'/a`
+ * with a 0-based account index `a`.
+ */
+export function makeSimpleHdPath(chainIndex: number, a: number): HdPath {
+  return makeCosmosPath(chainIndex, Slip10RawIndex.hardened(1), Slip10RawIndex.normal(a));
+}
+```
 
 ## Migration
 
