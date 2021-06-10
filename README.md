@@ -279,7 +279,7 @@ auto-harden any component and support paths of variable length.
 ## Implementation in CosmJS
 
 CosmJS implements BIP32 via the more general SLIP10 specification, which uses the same
-path format. An implementation of the above is as simple as that:
+path format. An implementation of the above is as simple as the following:
 
 ```ts
 /**
