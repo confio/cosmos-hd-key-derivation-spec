@@ -272,13 +272,13 @@ Currently the following restrictions
 4. Component 3 is `0'`
 5. Component 2/3/4 are small values (`x'` or `x` with `x <= 100`)
 
-And update to the Ledger app would be required to loosen those restrictions in case the
-Cosmos purpose `7564153` is used instead of `44`. In particular the app should not not
+An update to the Ledger app would be required to loosen those restrictions in case the
+Cosmos purpose `7564153` is used instead of `44`. In particular the app should not
 auto-harden any component and support paths of variable length.
 
 ## Implementation in CosmJS
 
-CosmJS implements Bech32 via the more general SLIP10 specification, which uses the same
+CosmJS implements BIP32 via the more general SLIP10 specification, which uses the same
 path format. An implementation of the above is as simple as that:
 
 ```ts
