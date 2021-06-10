@@ -274,7 +274,7 @@ Currently the following restrictions
 
 An update to the Ledger app would be required to loosen those restrictions in case the
 Cosmos purpose `7564153` is used instead of `44`. In particular the app should not
-auto-harden any component and support paths of variable length.
+auto-harden any component and should support paths of variable length.
 
 ## Implementation in CosmJS
 
