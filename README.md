@@ -328,6 +328,9 @@ for this document. However, here are some starting points for future work:
   [HD Key Derivation](https://substrate.dev/docs/en/knowledgebase/integrate/subkey#hd-key-derivation)
   scheme with `/` and `//` as separators and string path components that works for
   sr25519.
+- Cosmos SDK 0.43 introduces support for secp256r1. This is [motivated by][sdk7718] the
+  support of secure enclaves of mobile devices. At the point of writing a clearly
+  specified derivation algorithm could not be found by the author.
 
 ## Notes
 
@@ -375,3 +378,4 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 [ledgerapp-terra]: https://support.ledger.com/hc/en-us/articles/360017698979-Terra-LUNA-
 [ledgerapp-starname]:
   https://support.ledger.com/hc/en-us/articles/360016254900-Starname-IOV-
+[sdk7718]: https://github.com/cosmos/cosmos-sdk/issues/7718
