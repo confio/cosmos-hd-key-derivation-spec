@@ -306,7 +306,46 @@ export function makeSimpleHdPath(chainIndex: number, a: number): HdPath {
 
 ## Migration
 
-TODO: do
+The overarching goal for migrations is to avoid the use of the Cosmos Hub path for chains
+other than the Cosmos Hub. This means that the Cosmos Hub does not need to migrate to the
+new Cosmos purpose as long as there is no good reason to do so. We'll cover this as a
+special case below. Chains that decide to register their own SLIP44 coin type and do not
+want to reuse Cosmos client tooling (in particular the Cosmos Ledger app) are also
+discussed separately.
+
+Which derivation path is used cannot easily be detected by the chain or remote clients.
+Only clients that do the derivation know the path. So most of the following migration work
+has to happen in the client or is coordination effort between different clients. The
+following rough guide is supposed to provide an overview, but might not fully apply to
+every ecosystem:
+
+1. Get community support for adopting the Cosmos purpose described above.
+2. Register a chain index.
+3. Get clarity if the simple HD path is what you want to use. The answer is probably yes.
+4. If your client used the Cosmos Hub path before preserve support for it (for active
+   accounts as well as restoring secret recovery phrases). New accounts should be created
+   with the new schema. Do account discovery using both path patterns. Show notification
+   to the user encouraging a change.
+5. If you develop a new client support the new schema only. Consider an import feature
+   that supports legacy paths for users migrating from other clients. Consider account
+   discovery using both path patterns.
+
+### Special case: Cosmos Hub
+
+The BIP-44 compliant path `m/44'/118'/x'/0/y` belongs to coin index 118 (ATOM) and the
+Cosmos Hub can use this path as long as it wants to. The only slight drawback is the 5
+component structure originating from Bitcoin, but no real word problem with that is known
+to the author.
+
+If the Hub wants to use the flexibility of arbitrary subtrees in the future, the Cosmos
+path `m/7564153'/1'/*` is reserved.
+
+### Special case: Custom SLIP44 coin type
+
+Some Cosmos chains decided to register their own coin type in SLIP44<sup>4</sup> and do
+not wish to use the Cosmos Ledger app. In this case there is no direct need to migrate to
+the Cosmos purpose. However, if generic Cosmos client tooling should be used in the future
+a migration is worth considering.
 
 ## Other signing algorithms
 
@@ -343,6 +382,9 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 <sup>3</sup> Cosmos Hub specific resources: [Mintscan](https://www.mintscan.io/cosmos),
 [Big Dipper](https://cosmos.bigdipper.live/), [RPC domain](https://rpc.cosmos.network/),
 [Keplr config](https://github.com/chainapsis/keplr-extension/blob/v0.8.8/packages/extension/src/config.ts#L62-L67)
+
+<sup>4</sup> E.g. Starname (IOV) 234, Terra (LUNA) 330, Secret Network (SCRT) 529, Binance
+(BNB) 714, Persistence (XPRT) 750.
 
 <!-- End of document. Links below are not rendered. -->
 
