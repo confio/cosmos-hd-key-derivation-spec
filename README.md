@@ -74,7 +74,7 @@ on account balances rather than UTXO, the hierarchy defined by BIP44 is poorly s
 ## The Cosmos Hub path
 
 The Cosmos Hub HD path is `m / 44' / 118' / 0' / 0 / address_index` where `44` is the
-BIP44 `purpose`, `118` is the `coin_index` [for ATOM][slip44] and
+BIP44 `purpose`, `118` is the coin type [for ATOM][slip44] and
 [the last component](https://github.com/cosmos/cosmos-sdk/issues/4278#issuecomment-561238038)
 is used for multiple accounts of the same user. This path has been [used in the Cosmos
 fundraiser][fundraiser path] with `address_index = 0`.
@@ -94,7 +94,7 @@ sloppiness or intentional but in the context of HD paths it leads to a privacy i
 A good number of blockchains were created that reuse the Cosmos Hub path. A quick search
 in the [Keplr configuration] reveals that at least Kava, Secret Network, Akash, SifChain,
 CertiK, IRISnet, Regen, Sentinel, Cyber and Straightedge used or actively use the ATOM
-coin index 118. Using the same derivation path means that users that use one secret
+coin type 118. Using the same derivation path means that users that use one secret
 recovery phrase to interact with multiple networks will be signing with the same keypair.
 Their public identity is the same public key. This is then obfuscated because
 [bech32][bip173] addresses with different prefixes are used. Those addresses look
@@ -142,7 +142,7 @@ with the Cosmos SDK, client libraries such as CosmJS or the Cosmos Ledger app.
 This Cosmos app for the [Ledger hardware wallet][ledger] is in a bit of an identity
 crisis. One the one hand it is marketed as the app for the ATOM token. On the other hand
 it is called "Cosmos", not "Cosmos Hub". The app requires the use of an HD path starting
-with `m / 44' / 118'`, i.e. the ATOM coin index.
+with `m / 44' / 118'`, i.e. the ATOM coin type.
 
 A few Cosmos projects decided to create their own Ledger apps, such as
 [Binance][ledgerapp-binance], [Terra][ledgerapp-terra] or [Starname][ledgerapp-starname].
@@ -332,7 +332,7 @@ every ecosystem:
 
 ### Special case: Cosmos Hub
 
-The BIP-44 compliant path `m/44'/118'/x'/0/y` belongs to coin index 118 (ATOM) and the
+The BIP-44 compliant path `m/44'/118'/x'/0/y` belongs to coin type 118 (ATOM) and the
 Cosmos Hub can use this path as long as it wants to. The only slight drawback is the 5
 component structure originating from Bitcoin, but no real word problem with that is known
 to the author.
