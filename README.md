@@ -149,12 +149,9 @@ A few Cosmos projects decided to create their own Ledger apps, such as
 This allows them to fully customize the app but comes with significant maintenance cost.
 
 A goal expressed by various Cosmos community members is to be able to use one Ledger app
-for all Cosmos blockchains. The Cosmos SDK team
-[is](https://github.com/cosmos/cosmos-sdk/issues/6078)
-[working](https://github.com/cosmos/cosmos-sdk/issues/6513)
-[hard](https://github.com/cosmos/cosmos-sdk/issues/9320) to make transaction signing for
-arbitrary message types sufficiently self-describing to allow this to happen. This is in
-line with the vision to spawn
+for all Cosmos blockchains. The Cosmos SDK team [is][sdk6078] [working][sdk6513]
+[hard][sdk9320] to make transaction signing for arbitrary message types sufficiently
+self-describing to allow this to happen. This is in line with the vision to spawn
 [a million blockchains](https://www.youtube.com/watch?v=DWVPTYOrUUo) in the Cosmos
 ecosystem, which requires blockchain projects to be able to focus on their chain specific
 product instead of having to reinvent basic infrastructure components.
@@ -378,4 +375,7 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 [ledgerapp-terra]: https://support.ledger.com/hc/en-us/articles/360017698979-Terra-LUNA-
 [ledgerapp-starname]:
   https://support.ledger.com/hc/en-us/articles/360016254900-Starname-IOV-
+[sdk6078]: https://github.com/cosmos/cosmos-sdk/issues/6078
+[sdk6513]: https://github.com/cosmos/cosmos-sdk/issues/6513
 [sdk7718]: https://github.com/cosmos/cosmos-sdk/issues/7718
+[sdk9320]: https://github.com/cosmos/cosmos-sdk/issues/9320
