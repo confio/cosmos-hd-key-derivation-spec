@@ -392,8 +392,8 @@ for this document. However, here are some starting points for future work:
 
 ## Test vectors
 
-The following test vectors have been [generated using CosmJS][cosmjs834] and were
-verified using a [Python implementation](./tests):
+The following test vectors have been [generated using CosmJS][cosmjs834] and were verified
+using a [Python implementation](./tests):
 
 ### Simple HD path
 
