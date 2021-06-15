@@ -31,10 +31,9 @@ the same idea to other signing algorithms<sup>1</sup>.
   - [Migration](#migration)
     - [Special case: Cosmos Hub](#special-case-cosmos-hub)
     - [Special case: Custom SLIP44 coin type](#special-case-custom-slip44-coin-type)
+  - [Relationship to interchain accounts](#relationship-to-interchain-accounts)
   - [Other signing algorithms](#other-signing-algorithms)
   - [Notes](#notes)
-
-<!-- Added by: simon, at: Di 15 Jun 2021 11:50:21 CEST -->
 
 <!--te-->
 
@@ -352,6 +351,21 @@ not wish to use the Cosmos Ledger app. In this case there is no direct need to m
 the Cosmos purpose. However, if generic Cosmos client tooling should be used in the future
 a migration is worth considering.
 
+## Relationship to interchain accounts
+
+[Interchain accounts](https://medium.com/chainapsis/why-interchain-accounts-change-everything-for-cosmos-interoperability-59c19032bf11)
+as specified in [ICS27] serve as a remote control on chain B from chain A. On the target
+chain (chain B), a native blockchain account is created but without a keypair. Instead
+Inter-blockchain communication (IBC) is used to initiate actions. On the host chain (chain
+A) a regular account is created with a keypair. The advantage is that users of interchain
+accounts do not need to derive key material for many target chains. Instead only one
+keypair is required. In such a setup the user should be fully aware that all actions on
+all chains can easily be connected to one identity, making privacy less of a concern than
+described above.
+
+However, interchain accounts are an optional high level convenience feature that does not
+aim to replace native accounts controlled with private keys.
+
 ## Other signing algorithms
 
 Supporting HD derivation for algorithms other than BIP32 (secp256k1 only) is out of scope
@@ -426,3 +440,5 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 [sdk6513]: https://github.com/cosmos/cosmos-sdk/issues/6513
 [sdk7718]: https://github.com/cosmos/cosmos-sdk/issues/7718
 [sdk9320]: https://github.com/cosmos/cosmos-sdk/issues/9320
+[ics27]:
+  https://github.com/cosmos/ibc/tree/2a81e3f890/spec/app/ics-027-interchain-accounts
