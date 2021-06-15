@@ -282,33 +282,7 @@ auto-harden any component and should support paths of variable length.
 ### Implementation in CosmJS
 
 CosmJS implements BIP32 via the more general SLIP10 specification, which uses the same
-path format. An implementation of the above is as simple as the following:
-
-```ts
-/**
- * Creates a Cosmos path under the Cosmos purpose 7564153
- * in the form `m/7564153'/chain_index'/*`.
- */
-export function makeCosmosPath(
-  chainIndex: number,
-  ...components: Slip10RawIndex[]
-): HdPath {
-  const cosmosPurpose = 7564153;
-  return [
-    Slip10RawIndex.hardened(cosmosPurpose),
-    Slip10RawIndex.hardened(chainIndex),
-    ...components,
-  ];
-}
-
-/**
- * Creates a Cosmos simple HD path in the form `m/7564153'/chain_index'/1'/a`
- * with a 0-based account index `a`.
- */
-export function makeSimpleHdPath(chainIndex: number, a: number): HdPath {
-  return makeCosmosPath(chainIndex, Slip10RawIndex.hardened(1), Slip10RawIndex.normal(a));
-}
-```
+path format. An implementation of the above is demonstrated in [this work][cosmjs834].
 
 ## Migration
 
