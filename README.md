@@ -26,15 +26,15 @@ the same idea to other signing algorithms<sup>1</sup>.
   - [Chain specific path structure](#chain-specific-path-structure)
     - [Cosmos simple HD path](#cosmos-simple-hd-path)
   - [Implementation](#implementation)
-  - [Implementation in the Ledger app](#implementation-in-the-ledger-app)
-  - [Implementation in CosmJS](#implementation-in-cosmjs)
+    - [Implementation in the Ledger app](#implementation-in-the-ledger-app)
+    - [Implementation in CosmJS](#implementation-in-cosmjs)
   - [Migration](#migration)
     - [Special case: Cosmos Hub](#special-case-cosmos-hub)
     - [Special case: Custom SLIP44 coin type](#special-case-custom-slip44-coin-type)
   - [Other signing algorithms](#other-signing-algorithms)
   - [Notes](#notes)
 
-<!-- Added by: simon, at: Di 15 Jun 2021 11:04:10 CEST -->
+<!-- Added by: simon, at: Di 15 Jun 2021 11:50:21 CEST -->
 
 <!--te-->
 
@@ -255,7 +255,7 @@ BIP32.
 It is important to ensure the derivation can be implemented in both hardware and software
 wallets. We explore two example implementations to verify the feasibility.
 
-## Implementation in the Ledger app
+### Implementation in the Ledger app
 
 Currently the Cosmos Ledger app
 [sets the path](https://github.com/cosmos/ledger-cosmos/blob/6c194daa28936e273f9548eabca9e72ba04bb632/app/Makefile#L33)
@@ -277,7 +277,7 @@ An update to the Ledger app would be required to loosen those restrictions in ca
 Cosmos purpose `7564153` is used instead of `44`. In particular the app should not
 auto-harden any component and should support paths of variable length.
 
-## Implementation in CosmJS
+### Implementation in CosmJS
 
 CosmJS implements BIP32 via the more general SLIP10 specification, which uses the same
 path format. An implementation of the above is as simple as the following:
