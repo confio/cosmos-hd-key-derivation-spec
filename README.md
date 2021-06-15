@@ -319,7 +319,7 @@ discussed separately.
 
 Which derivation path is used cannot easily be detected by the chain or remote clients.
 Only clients that do the derivation know the path. So most of the following migration work
-has to happen in the client or is coordination effort between different clients. The
+has to happen in the client or requires a coordination effort between different clients. The
 following rough guide is supposed to provide an overview, but might not fully apply to
 every ecosystem:
 
