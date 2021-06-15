@@ -31,10 +31,12 @@ the same idea to other signing algorithms<sup>1</sup>.
   - [Migration](#migration)
     - [Special case: Cosmos Hub](#special-case-cosmos-hub)
     - [Special case: Custom SLIP44 coin type](#special-case-custom-slip44-coin-type)
+  - [Relationship to interchain accounts](#relationship-to-interchain-accounts)
   - [Other signing algorithms](#other-signing-algorithms)
+  - [Test vectors](#test-vectors)
+    - [Simple HD path](#simple-hd-path)
+    - [Generic Cosmos path](#generic-cosmos-path)
   - [Notes](#notes)
-
-<!-- Added by: simon, at: Di 15 Jun 2021 11:50:21 CEST -->
 
 <!--te-->
 
@@ -352,6 +354,21 @@ not wish to use the Cosmos Ledger app. In this case there is no direct need to m
 the Cosmos purpose. However, if generic Cosmos client tooling should be used in the future
 a migration is worth considering.
 
+## Relationship to interchain accounts
+
+[Interchain accounts](https://medium.com/chainapsis/why-interchain-accounts-change-everything-for-cosmos-interoperability-59c19032bf11)
+as specified in [ICS27] serve as a remote control on chain B from chain A. On the target
+chain (chain B), a native blockchain account is created but without a keypair. Instead
+Inter-blockchain communication (IBC) is used to initiate actions. On the host chain (chain
+A) a regular account is created with a keypair. The advantage is that users of interchain
+accounts do not need to derive key material for many target chains. Instead only one
+keypair is required. In such a setup the user should be fully aware that all actions on
+all chains can easily be connected to one identity, making privacy less of a concern than
+described above.
+
+However, interchain accounts are an optional high level convenience feature that does not
+aim to replace native accounts controlled with private keys.
+
 ## Other signing algorithms
 
 Supporting HD derivation for algorithms other than BIP32 (secp256k1 only) is out of scope
@@ -372,6 +389,54 @@ for this document. However, here are some starting points for future work:
 - Cosmos SDK 0.43 introduces support for secp256r1. This is [motivated by][sdk7718] the
   support of secure enclaves of mobile devices. At the point of writing a clearly
   specified derivation algorithm could not be found by the author.
+
+## Test vectors
+
+The following test vectors have been [generated using CosmJS][cosmjs834] and were
+verified using a [Python implementation](./tests):
+
+### Simple HD path
+
+Simple HD path for account 0, 1, 75_000_000 on the testing chain:
+
+```
+m/7564153'/0'/1'/0: 80736b79,80000000,80000001,00000000
+m/7564153'/0'/1'/1: 80736b79,80000000,80000001,00000001
+m/7564153'/0'/1'/75000000: 80736b79,80000000,80000001,047868c0
+```
+
+Simple HD path for account 0 on the chains 0, 1, 42, 42_000_000:
+
+```
+m/7564153'/0'/1'/0: 80736b79,80000000,80000001,00000000
+m/7564153'/1'/1'/0: 80736b79,80000001,80000001,00000000
+m/7564153'/42'/1'/0: 80736b79,8000002a,80000001,00000000
+m/7564153'/42000000'/1'/0: 80736b79,8280de80,80000001,00000000
+```
+
+### Generic Cosmos path
+
+Cosmos path with all unhardened sub-trees of length 0, 1, 3 on the testing chain:
+
+```
+m/7564153'/0': 80736b79,80000000
+m/7564153'/0'/7: 80736b79,80000000,00000007
+m/7564153'/0'/7/7/7: 80736b79,80000000,00000007,00000007,00000007
+```
+
+Cosmos path with all hardened sub-trees of length 0, 1, 3 on the testing chain:
+
+```
+m/7564153'/0': 80736b79,80000000
+m/7564153'/0'/7': 80736b79,80000000,80000007
+m/7564153'/0'/7'/7'/7': 80736b79,80000000,80000007,80000007,80000007
+```
+
+Cosmos path with hardened/unhardened sub-tree on the testing chain:
+
+```
+m/7564153'/0'/2'/3/4': 80736b79,80000000,80000002,00000003,80000004
+```
 
 ## Notes
 
@@ -426,3 +491,6 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 [sdk6513]: https://github.com/cosmos/cosmos-sdk/issues/6513
 [sdk7718]: https://github.com/cosmos/cosmos-sdk/issues/7718
 [sdk9320]: https://github.com/cosmos/cosmos-sdk/issues/9320
+[cosmjs834]: https://github.com/cosmos/cosmjs/pull/834
+[ics27]:
+  https://github.com/cosmos/ibc/tree/2a81e3f890/spec/app/ics-027-interchain-accounts
