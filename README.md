@@ -34,6 +34,8 @@ the same idea to other signing algorithms<sup>1</sup>.
   - [Relationship to interchain accounts](#relationship-to-interchain-accounts)
   - [Other signing algorithms](#other-signing-algorithms)
   - [Test vectors](#test-vectors)
+    - [Simple HD path](#simple-hd-path)
+    - [Generic Cosmos path](#generic-cosmos-path)
   - [Notes](#notes)
 
 <!--te-->
@@ -390,7 +392,51 @@ for this document. However, here are some starting points for future work:
 
 ## Test vectors
 
-TODO: do
+The following test vectors have been [generated using CosmJS][cosmjs834] and where
+verified using a [Python implementation](./tests):
+
+### Simple HD path
+
+Simple HD path for account 0, 1, 75_000_000 on the testing chain:
+
+```
+m/7564153'/0'/1'/0: 80736b79,80000000,80000001,00000000
+m/7564153'/0'/1'/1: 80736b79,80000000,80000001,00000001
+m/7564153'/0'/1'/75000000: 80736b79,80000000,80000001,047868c0
+```
+
+Simple HD path for account 0 on the chains 0, 1, 42, 42_000_000:
+
+```
+m/7564153'/0'/1'/0: 80736b79,80000000,80000001,00000000
+m/7564153'/1'/1'/0: 80736b79,80000001,80000001,00000000
+m/7564153'/42'/1'/0: 80736b79,8000002a,80000001,00000000
+m/7564153'/42000000'/1'/0: 80736b79,8280de80,80000001,00000000
+```
+
+### Generic Cosmos path
+
+Cosmos path with all unhardened sub-trees of length 0, 1, 3 on the testing chain:
+
+```
+m/7564153'/0': 80736b79,80000000
+m/7564153'/0'/7: 80736b79,80000000,00000007
+m/7564153'/0'/7/7/7: 80736b79,80000000,00000007,00000007,00000007
+```
+
+Cosmos path with all hardened sub-trees of length 0, 1, 3 on the testing chain:
+
+```
+m/7564153'/0': 80736b79,80000000
+m/7564153'/0'/7': 80736b79,80000000,80000007
+m/7564153'/0'/7'/7'/7': 80736b79,80000000,80000007,80000007,80000007
+```
+
+Cosmos path with hardened/unhardened sub-tree on the testing chain:
+
+```
+m/7564153'/0'/2'/3/4': 80736b79,80000000,80000002,00000003,80000004
+```
 
 ## Notes
 
@@ -445,5 +491,6 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 [sdk6513]: https://github.com/cosmos/cosmos-sdk/issues/6513
 [sdk7718]: https://github.com/cosmos/cosmos-sdk/issues/7718
 [sdk9320]: https://github.com/cosmos/cosmos-sdk/issues/9320
+[cosmjs834]: https://github.com/cosmos/cosmjs/pull/834
 [ics27]:
   https://github.com/cosmos/ibc/tree/2a81e3f890/spec/app/ics-027-interchain-accounts
