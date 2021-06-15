@@ -338,7 +338,7 @@ every ecosystem:
 
 The BIP-44 compliant path `m/44'/118'/x'/0/y` belongs to coin type 118 (ATOM) and the
 Cosmos Hub can use this path as long as it wants to. The only slight drawback is the 5
-component structure originating from Bitcoin, but no real word problem with that is known
+component structure originating from Bitcoin, but no real world problem with that is known
 to the author.
 
 If the Hub wants to use the flexibility of arbitrary subtrees in the future, the Cosmos
