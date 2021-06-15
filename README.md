@@ -33,6 +33,7 @@ the same idea to other signing algorithms<sup>1</sup>.
     - [Special case: Custom SLIP44 coin type](#special-case-custom-slip44-coin-type)
   - [Relationship to interchain accounts](#relationship-to-interchain-accounts)
   - [Other signing algorithms](#other-signing-algorithms)
+  - [Test vectors](#test-vectors)
   - [Notes](#notes)
 
 <!--te-->
@@ -386,6 +387,10 @@ for this document. However, here are some starting points for future work:
 - Cosmos SDK 0.43 introduces support for secp256r1. This is [motivated by][sdk7718] the
   support of secure enclaves of mobile devices. At the point of writing a clearly
   specified derivation algorithm could not be found by the author.
+
+## Test vectors
+
+TODO: do
 
 ## Notes
 
