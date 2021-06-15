@@ -325,7 +325,7 @@ every ecosystem:
 
 1. Get community support for adopting the Cosmos purpose described above.
 2. Register a chain index.
-3. Get clarity if the simple HD path is what you want to use. The answer is probably yes.
+3. Get clarity over whether the simple HD path is what you want to use. The answer is probably yes.
 4. If your client used the Cosmos Hub path before preserve support for it (for active
    accounts as well as restoring secret recovery phrases). New accounts should be created
    with the new schema. Do account discovery using both path patterns. Show notification
