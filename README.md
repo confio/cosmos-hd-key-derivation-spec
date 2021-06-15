@@ -26,11 +26,15 @@ the same idea to other signing algorithms<sup>1</sup>.
   - [Chain specific path structure](#chain-specific-path-structure)
     - [Cosmos simple HD path](#cosmos-simple-hd-path)
   - [Implementation](#implementation)
+    - [Implementation in the Ledger app](#implementation-in-the-ledger-app)
+    - [Implementation in CosmJS](#implementation-in-cosmjs)
   - [Migration](#migration)
+    - [Special case: Cosmos Hub](#special-case-cosmos-hub)
+    - [Special case: Custom SLIP44 coin type](#special-case-custom-slip44-coin-type)
   - [Other signing algorithms](#other-signing-algorithms)
   - [Notes](#notes)
 
-<!-- Added by: simon, at: Mi  2 Jun 2021 15:24:01 CEST -->
+<!-- Added by: simon, at: Di 15 Jun 2021 11:50:21 CEST -->
 
 <!--te-->
 
@@ -74,7 +78,7 @@ on account balances rather than UTXO, the hierarchy defined by BIP44 is poorly s
 ## The Cosmos Hub path
 
 The Cosmos Hub HD path is `m / 44' / 118' / 0' / 0 / address_index` where `44` is the
-BIP44 `purpose`, `118` is the `coin_index` [for ATOM][slip44] and
+BIP44 `purpose`, `118` is the coin type [for ATOM][slip44] and
 [the last component](https://github.com/cosmos/cosmos-sdk/issues/4278#issuecomment-561238038)
 is used for multiple accounts of the same user. This path has been [used in the Cosmos
 fundraiser][fundraiser path] with `address_index = 0`.
@@ -94,7 +98,7 @@ sloppiness or intentional but in the context of HD paths it leads to a privacy i
 A good number of blockchains were created that reuse the Cosmos Hub path. A quick search
 in the [Keplr configuration] reveals that at least Kava, Secret Network, Akash, SifChain,
 CertiK, IRISnet, Regen, Sentinel, Cyber and Straightedge used or actively use the ATOM
-coin index 118. Using the same derivation path means that users that use one secret
+coin type 118. Using the same derivation path means that users that use one secret
 recovery phrase to interact with multiple networks will be signing with the same keypair.
 Their public identity is the same public key. This is then obfuscated because
 [bech32][bip173] addresses with different prefixes are used. Those addresses look
@@ -142,19 +146,16 @@ with the Cosmos SDK, client libraries such as CosmJS or the Cosmos Ledger app.
 This Cosmos app for the [Ledger hardware wallet][ledger] is in a bit of an identity
 crisis. One the one hand it is marketed as the app for the ATOM token. On the other hand
 it is called "Cosmos", not "Cosmos Hub". The app requires the use of an HD path starting
-with `m / 44' / 118'`, i.e. the ATOM coin index.
+with `m / 44' / 118'`, i.e. the ATOM coin type.
 
 A few Cosmos projects decided to create their own Ledger apps, such as
 [Binance][ledgerapp-binance], [Terra][ledgerapp-terra] or [Starname][ledgerapp-starname].
 This allows them to fully customize the app but comes with significant maintenance cost.
 
 A goal expressed by various Cosmos community members is to be able to use one Ledger app
-for all Cosmos blockchains. The Cosmos SDK team
-[is](https://github.com/cosmos/cosmos-sdk/issues/6078)
-[working](https://github.com/cosmos/cosmos-sdk/issues/6513)
-[hard](https://github.com/cosmos/cosmos-sdk/issues/9320) to make transaction signing for
-arbitrary message types sufficiently self-describing to allow this to happen. This is in
-line with the vision to spawn
+for all Cosmos blockchains. The Cosmos SDK team [is][sdk6078] [working][sdk6513]
+[hard][sdk9320] to make transaction signing for arbitrary message types sufficiently
+self-describing to allow this to happen. This is in line with the vision to spawn
 [a million blockchains](https://www.youtube.com/watch?v=DWVPTYOrUUo) in the Cosmos
 ecosystem, which requires blockchain projects to be able to focus on their chain specific
 product instead of having to reinvent basic infrastructure components.
@@ -254,7 +255,7 @@ BIP32.
 It is important to ensure the derivation can be implemented in both hardware and software
 wallets. We explore two example implementations to verify the feasibility.
 
-## Implementation in the Ledger app
+### Implementation in the Ledger app
 
 Currently the Cosmos Ledger app
 [sets the path](https://github.com/cosmos/ledger-cosmos/blob/6c194daa28936e273f9548eabca9e72ba04bb632/app/Makefile#L33)
@@ -276,7 +277,7 @@ An update to the Ledger app would be required to loosen those restrictions in ca
 Cosmos purpose `7564153` is used instead of `44`. In particular the app should not
 auto-harden any component and should support paths of variable length.
 
-## Implementation in CosmJS
+### Implementation in CosmJS
 
 CosmJS implements BIP32 via the more general SLIP10 specification, which uses the same
 path format. An implementation of the above is as simple as the following:
@@ -309,7 +310,47 @@ export function makeSimpleHdPath(chainIndex: number, a: number): HdPath {
 
 ## Migration
 
-TODO: do
+The overarching goal for migrations is to avoid the use of the Cosmos Hub path for chains
+other than the Cosmos Hub. This means that the Cosmos Hub does not need to migrate to the
+new Cosmos purpose as long as there is no good reason to do so. We'll cover this as a
+special case below. Chains that decide to register their own SLIP44 coin type and do not
+want to reuse Cosmos client tooling (in particular the Cosmos Ledger app) are also
+discussed separately.
+
+Which derivation path is used cannot easily be detected by the chain or remote clients.
+Only clients that do the derivation know the path. So most of the following migration work
+has to happen in the client or requires a coordination effort between different clients.
+The following rough guide is supposed to provide an overview, but might not fully apply to
+every ecosystem:
+
+1. Get community support for adopting the Cosmos purpose described above.
+2. Register a chain index.
+3. Get clarity over whether the simple HD path is what you want to use. The answer is
+   probably yes.
+4. If your client used the Cosmos Hub path before preserve support for it (for active
+   accounts as well as restoring secret recovery phrases). New accounts should be created
+   with the new schema. Do account discovery using both path patterns. Show notification
+   to the user encouraging a change.
+5. If you develop a new client support the new schema only. Consider an import feature
+   that supports legacy paths for users migrating from other clients. Consider account
+   discovery using both path patterns.
+
+### Special case: Cosmos Hub
+
+The BIP-44 compliant path `m/44'/118'/x'/0/y` belongs to coin type 118 (ATOM) and the
+Cosmos Hub can use this path as long as it wants to. The only slight drawback is the 5
+component structure originating from Bitcoin, but no real world problem with that is known
+to the author.
+
+If the Hub wants to use the flexibility of arbitrary subtrees in the future, the Cosmos
+path `m/7564153'/1'/*` is reserved.
+
+### Special case: Custom SLIP44 coin type
+
+Some Cosmos chains decided to register their own coin type in SLIP44<sup>4</sup> and do
+not wish to use the Cosmos Ledger app. In this case there is no direct need to migrate to
+the Cosmos purpose. However, if generic Cosmos client tooling should be used in the future
+a migration is worth considering.
 
 ## Other signing algorithms
 
@@ -347,6 +388,9 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 [Big Dipper](https://cosmos.bigdipper.live/), [RPC domain](https://rpc.cosmos.network/),
 [Keplr config](https://github.com/chainapsis/keplr-extension/blob/v0.8.8/packages/extension/src/config.ts#L62-L67)
 
+<sup>4</sup> E.g. Starname (IOV) 234, Terra (LUNA) 330, Secret Network (SCRT) 529, Binance
+(BNB) 714, Persistence (XPRT) 750.
+
 <!-- End of document. Links below are not rendered. -->
 
 [bip32]: https://github.com/bitcoin/bips/blob/6a5c99fcc9/bip-0032.mediawiki
@@ -378,4 +422,7 @@ parts 44'/c'/a'. Unfortunately, a lot of exceptions occur due to compatibility r
 [ledgerapp-terra]: https://support.ledger.com/hc/en-us/articles/360017698979-Terra-LUNA-
 [ledgerapp-starname]:
   https://support.ledger.com/hc/en-us/articles/360016254900-Starname-IOV-
+[sdk6078]: https://github.com/cosmos/cosmos-sdk/issues/6078
+[sdk6513]: https://github.com/cosmos/cosmos-sdk/issues/6513
 [sdk7718]: https://github.com/cosmos/cosmos-sdk/issues/7718
+[sdk9320]: https://github.com/cosmos/cosmos-sdk/issues/9320
