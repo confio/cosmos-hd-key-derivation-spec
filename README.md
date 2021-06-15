@@ -26,11 +26,15 @@ the same idea to other signing algorithms<sup>1</sup>.
   - [Chain specific path structure](#chain-specific-path-structure)
     - [Cosmos simple HD path](#cosmos-simple-hd-path)
   - [Implementation](#implementation)
+  - [Implementation in the Ledger app](#implementation-in-the-ledger-app)
+  - [Implementation in CosmJS](#implementation-in-cosmjs)
   - [Migration](#migration)
+    - [Special case: Cosmos Hub](#special-case-cosmos-hub)
+    - [Special case: Custom SLIP44 coin type](#special-case-custom-slip44-coin-type)
   - [Other signing algorithms](#other-signing-algorithms)
   - [Notes](#notes)
 
-<!-- Added by: simon, at: Mi  2 Jun 2021 15:24:01 CEST -->
+<!-- Added by: simon, at: Di 15 Jun 2021 11:04:10 CEST -->
 
 <!--te-->
 
